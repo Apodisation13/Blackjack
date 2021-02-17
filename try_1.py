@@ -37,21 +37,6 @@ def calc_cards(hand: list):
     return calc_hand
 
 
-def check_blackjack(hand: list, player: str):
-    """проверить нет ли 21 в стартовой руке дилера или игрока"""
-    card_hand = hand.copy()
-    result = sum(hand)
-    if result == 21:
-        if player == "Dealer":
-            print(f'Карты в руке дилера: {hand}')
-            print("\033[31m{}\033[0m".format("BLACKJACK!!! Dealer wins, you lose!"))
-            return True
-        elif player == "Player":
-            print("\033[32m{}\033[0m".format('BLACKJACK!!! You win the game!'))
-            return True
-    return False
-
-
 def check_score(hand: list, player: str):
     """проверяем счёт"""
     result = sum(hand)
@@ -70,12 +55,33 @@ def check_score(hand: list, player: str):
 
 
 def hit(cards: list, hand: list):
-    """игрок берет карту"""
+    """игрок берет 1 карту"""
     player_choice = choice(cards)
     cards.remove(player_choice)
     hand.append(player_choice)
     print(hand)
     return hand
+
+
+def check_win(player_result, dealer_result):
+    """итоговое определение победителя"""
+    if dealer_result >= 21:
+        return
+    elif player_result == dealer_result:
+        print("НИЧЬЯ")
+    elif player_result < dealer_result:
+        print("\033[31m{}\033[0m".format('Dealer wins, you lose!'))
+
+
+def dealer_AI(player_result, calc_dealer_hand, dealer_hand):
+    """логика дилера - взять карту пока у него не столько же сколько у игрока"""
+    dealer_result = check_score(calc_dealer_hand, "Dealer")
+    while dealer_result < player_result:
+        dealer_hand = hit(cards, dealer_hand)
+        calc_dealer_hand = calc_cards(dealer_hand)
+        dealer_result = check_score(calc_dealer_hand, "Dealer")
+    print(f'Игрок: {player_hand} - {player_result}, Дилер: {dealer_hand} - {dealer_result}')
+    return dealer_result
 
 
 cards = [2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5,
@@ -86,41 +92,50 @@ cards = [2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5,
 
 dealer_hand = starting_draw_dealer(cards)
 calc_dealer_hand = calc_cards(dealer_hand)
+player_hand = starting_draw_player(cards)
+calc_player_hand = calc_cards(player_hand)
 
-if not check_blackjack(calc_dealer_hand, "Dealer"):
+dealer_result = check_score(calc_dealer_hand, "Dealer")
+player_result = check_score(calc_player_hand, "Player")
 
-    player_hand = starting_draw_player(cards)
-    calc_player_hand = calc_cards(player_hand)
 
-    if not check_blackjack(calc_player_hand, 'Player'):
-        print("\nВы можете ввести: hit/h чтобы взять ещё карту, "
-              "stand/s чтобы остановиться\n")
+if dealer_result == 21 and player_result != 21:
+    print("\033[31m{}\033[0m".format(f'{dealer_hand} - BLACKJACK!!! Dealer wins, you lose!'))
+elif player_result == 21 and dealer_result != 21:
+    print("\033[32m{}\033[0m".format('BLACKJACK!!! You win the game!'))
+elif player_result == 21 and dealer_result == 21:
+    print("НИЧЬЯ! НУ НИЧЕГО СЕБЕ...")
 
-        print(f'Ваш результат - {sum(calc_player_hand)}')
+else:
 
-        while True:
-            command = input("Введите команду: ")
+    print("\nВы можете ввести: hit/h чтобы взять ещё карту, "
+          "stand/s чтобы остановиться, double/d чтобы удвоить ставку и взять одну карту\n")
 
-            if command.lower() in ["hit", 'h']:
-                player_hand = hit(cards, player_hand)
-                calc_player_hand = calc_cards(player_hand)
-                player_result = check_score(calc_player_hand, "Player")
-                print(f'Ваш результат - {sum(calc_player_hand)}')
-                if player_result >= 21:
-                    break
+    print(f'Ваш результат - {sum(calc_player_hand)}')
 
-            elif command.lower() in ["stand", "s"]:
-                player_result = check_score(calc_player_hand, "Player")
-                dealer_result = check_score(calc_dealer_hand, "Dealer")
-                while dealer_result < player_result:
-                    dealer_hand = hit(cards, dealer_hand)
-                    calc_dealer_hand = calc_cards(dealer_hand)
-                    dealer_result = check_score(calc_dealer_hand, "Dealer")
-                print(f'Игрок: {player_hand} - {player_result}, Дилер: {dealer_hand} - {dealer_result}')
-                if dealer_result >= 21:
-                    break
-                elif player_result == dealer_result:
-                    print("НИЧЬЯ")
-                elif player_result < dealer_result:
-                    print("\033[31m{}\033[0m".format('Dealer wins, you lose!'))
+    while True:
+        command = input("Введите команду: ")
+
+        if command.lower() in ["hit", 'h']:
+            player_hand = hit(cards, player_hand)
+            calc_player_hand = calc_cards(player_hand)
+            player_result = check_score(calc_player_hand, "Player")
+            print(f'Ваш результат - {sum(calc_player_hand)}')
+            if player_result >= 21:
                 break
+
+        elif command.lower() in ['double', 'd']:
+            player_hand = hit(cards, player_hand)
+            calc_player_hand = calc_cards(player_hand)
+            player_result = check_score(calc_player_hand, "Player")
+            if player_result >= 21:
+                break
+            dealer_result = dealer_AI(player_result, calc_dealer_hand, dealer_hand)
+            check_win(player_result, dealer_result)
+
+        elif command.lower() in ["stand", "s"]:
+            print(dealer_hand)
+            player_result = check_score(calc_player_hand, "Player")
+            dealer_result = dealer_AI(player_result, calc_dealer_hand, dealer_hand)
+            check_win(player_result, dealer_result)
+            break
