@@ -2,6 +2,7 @@ from random import choice
 
 
 def starting_draw_dealer(cards: list):
+    """начальный дро дилера"""
     starting_dealer_hand = []
     for _ in range(2):
         dealer_choice = choice(cards)
@@ -12,6 +13,7 @@ def starting_draw_dealer(cards: list):
 
 
 def starting_draw_player(cards: list):
+    """начальный дро игрока"""
     starting_player_hand = []
     for _ in range(2):
         player_choice = choice(cards)
@@ -22,6 +24,7 @@ def starting_draw_player(cards: list):
 
 
 def calc_cards(hand: list):
+    """преобразовать карты в удобные для вычисления"""
     calc_hand = []
     for card in hand:
         if card in ['J', 'Q', 'K']:
@@ -35,31 +38,71 @@ def calc_cards(hand: list):
 
 
 def check_blackjack(hand: list, player: str):
+    """проверить нет ли 21 в стартовой руке дилера или игрока"""
     card_hand = hand.copy()
-    if sum(hand) == 21 and player == "Dealer":
-        print(f'Карты в руке дилера: {card_hand}')
-        print(f'21!!! {player} wins the game!')
-        return True
-    if sum(hand) == 21 and player == "Player":
-        print(f'21!!! {player} wins the game!')
-        return
+    result = sum(hand)
+    if result == 21:
+        if player == "Dealer":
+            print(f'Карты в руке дилера: {card_hand}')
+            print(f'21!!! {player} wins the game!')
+            return True
+        elif player == "Player":
+            print(f'21!!! {player} wins the game!')
+            return True
     return False
+
+
+def check_score(hand: list):
+    """проверяем счёт"""
+    result = sum(hand)
+    print(f"Ваш результат - {result}")
+    if result > 21:
+        print(f'BUSTED! You lose the game')
+        return result
+    elif result == 21:
+        print(f'21!!! You win the game!')
+    return result
+
+
+def hit(cards: list, hand: list):
+    """игрок берет карту"""
+    player_choice = choice(cards)
+    cards.remove(player_choice)
+    hand.append(player_choice)
+    return hand
 
 
 cards = [2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5,
          6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10,
          "J", "J", "J", "J", "Q", "Q", "Q", "Q", "K", "K", "K", "K",
          "A", "A", "A", "A"]
-player_count = 0
-dealer_count = 0
 
 
 dealer_hand = starting_draw_dealer(cards)
 calc_dealer_hand = calc_cards(dealer_hand)
 
 if not check_blackjack(calc_dealer_hand, "Dealer"):
+
     player_hand = starting_draw_player(cards)
     calc_player_hand = calc_cards(player_hand)
 
     if not check_blackjack(calc_player_hand, 'Player'):
-        pass
+        print("\nВы можете ввести: hit/h чтобы взять ещё карту, "
+              "stand/s чтобы остановиться\n")
+
+        print(f'Ваш результат - {sum(calc_player_hand)}')
+
+        while True:
+            command = input("Введите команду: ")
+
+            if command.lower() in ["hit", 'h']:
+                player_hand = hit(cards, player_hand)
+                calc_player_hand = calc_cards(player_hand)
+                player_result = check_score(calc_player_hand)
+                if player_result > 21:
+                    break
+
+            elif command.lower() in ["stand", "s"]:
+                player_result = check_score(calc_player_hand)
+                dealer_result = check_score(calc_dealer_hand)
+                break
