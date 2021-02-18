@@ -10,7 +10,7 @@ def starting_draw_dealer(cards: list):
         cards.remove(dealer_choice)
         starting_dealer_hand.append(dealer_choice)
     print(f"Карты в руке дилера: ['{starting_dealer_hand[0]}', ??]")
-    print(starting_dealer_hand)
+    # print(starting_dealer_hand)
     return starting_dealer_hand
 
 
@@ -131,9 +131,11 @@ if check_starting_hand_blackjack(player_result[0], dealer_result[0], dealer_hand
             print(f'Карты в руке игрока: {player_hand}')
             player_score = check_score(player_result)
             # print(player_score)
-            if player_score >= 21:
+            if player_score == 21:
                 dealer_score = dealer_AI(dealer_result[0], player_score, dealer_hand, player_hand)
                 check_win(player_score, dealer_score)
+                break
+            if player_score > 21:
                 break
 
         elif command.lower() in ["stand", "s"]:
