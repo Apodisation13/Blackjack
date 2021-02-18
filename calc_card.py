@@ -40,7 +40,7 @@ def calc_cards(hand: list, first_draw: bool):
     if ace:
         result_ace += sum(calc_hand)
         # print("Результат с тузами", result_ace)
-        if result_ace >= 21:
+        if result_ace > 21:
             result_ace = 0
 
     result += sum(calc_hand)
