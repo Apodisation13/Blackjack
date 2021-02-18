@@ -53,8 +53,10 @@ def check_score(result: tuple):
 def check_starting_hand_blackjack(player, dealer, hand):
     if dealer == 21 and player != 21:
         print("\033[31m{}\033[0m".format(f'{hand} - BLACKJACK!!! Dealer wins, you lose!'))
+        money.lose(bet)
     elif player == 21 and dealer != 21:
         print("\033[32m{}\033[0m".format('BLACKJACK!!! You win the game!'))
+        money.win(bet)
     elif player == 21 and dealer == 21:
         print("НИЧЬЯ! НУ НИЧЕГО СЕБЕ...")
     else:
@@ -80,28 +82,32 @@ def dealer_AI(dealer_score, player_score, dealer_hand, player_hand):
 def check_win(player_score, dealer_score):
     if dealer_score > 21:
         print("\033[32m{}\033[0m".format("DEALER BUSTED! You win the game!"))
+        money.win(bet)
         return
     if dealer_score == 21:
         if player_score == 21:
             print("НИЧЬЯ! НУ НИЧЕГО СЕБЕ...")
             return
         print("\033[31m{}\033[0m".format("BLACKJACK! Dealer wins the game! You lose!"))
+        money.lose(bet)
         return
     if dealer_score == player_score:
         print('НИЧЬЯ')
     if dealer_score > player_score:
         print("\033[31m{}\033[0m".format("Dealer wins the game! You lose!"))
+        money.lose(bet)
     if dealer_score < player_score:
         print("\033[32m{}\033[0m".format("You win the game!"))
+        money.win(bet)
 
 
 def game(cards: list):
-
+    winner = ''
     dealer_hand = starting_draw_dealer(cards)
-    # dealer_hand = ["A", 2]
+    # dealer_hand = ["A", 10]
     # print(dealer_hand)
     player_hand = starting_draw_player(cards)
-    # player_hand = ["A", 4]
+    # player_hand = ["A", "Q"]
     # print(player_hand)
     player_result = calc_cards(player_hand, first_draw=True)
     dealer_result = calc_cards(dealer_hand, first_draw=True)
@@ -117,8 +123,11 @@ def game(cards: list):
               "stand/s чтобы остановиться, double/d чтобы удвоить ставку и взять одну карту")
 
         double_block = False
+        double_status = False
 
         while True:
+            if money.start_cash < 2 * bet:
+                double_block = True
 
             command = input("\nВведите команду: ")
 
@@ -136,6 +145,7 @@ def game(cards: list):
                     check_win(player_score, dealer_score)
                     break
                 if player_score > 21:
+                    money.lose(bet)
                     break
 
             elif command.lower() in ["stand", "s"]:
@@ -144,6 +154,7 @@ def game(cards: list):
                 break
 
             elif command.lower() in ["double", "d"] and not double_block:
+                print(f'Вы поставили ещё {bet} рублей')
                 hit(cards, player_hand)
                 # player_hand.append("A")
                 player_result = calc_cards(player_hand, first_draw=False)
@@ -153,15 +164,18 @@ def game(cards: list):
                     if player_score == 21:
                         print("\033[32m{}\033[0m".format("BLACKJACK!!!"))
                     dealer_score = dealer_AI(dealer_result[0], player_score, dealer_hand, player_hand)
+
                     check_win(player_score, dealer_score)
                     break
 
                 if player_score > 21:
                     print("\033[31m{}\033[0m".format("BUSTED! You lose the game!"))
+                    money.lose(bet=bet*2)
                     break
 
             else:
                 print('Неправильная команда')
+        return winner
 
 cards_defalut = [2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5,
              6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10,
@@ -169,4 +183,18 @@ cards_defalut = [2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5,
              "A", "A", "A", "A"]
 cards = cards_defalut.copy()
 
-game(cards)
+
+money = Money()
+while money.start_cash != 0:
+    try:
+        bet = int(input("\nСдейлайте ставку: "))
+        if bet <= 0:
+            print("Вводить только числа БОЛЬШЕ НУЛЯ")
+    except ValueError:
+        print('Вводить только целые числа')
+    else:
+        if money.can_bet(bet):
+            winner = game(cards)
+            money.show_wallet()
+            cards = cards_defalut
+            print(winner)
