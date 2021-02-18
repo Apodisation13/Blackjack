@@ -146,3 +146,22 @@ if check_starting_hand_blackjack(player_result[0], dealer_result[0], dealer_hand
             else:
                 check_win(player_result[0], dealer_score)
             break
+
+        elif command.lower() in ["double", "d"]:
+            hit_status = True
+            hit(cards, player_hand)
+            # player_hand.append("A")
+            player_result = calc_cards(player_hand, first_draw=False)
+            player_score = max(player_result)
+            print(f'Карты в руке игрока: {player_hand} - {player_score}')
+            if player_score <= 21:
+                if player_score == 21:
+                    print("\033[32m{}\033[0m".format("BLACKJACK!!!"))
+                dealer_score = dealer_AI(dealer_result[0], player_score, dealer_hand, player_hand)
+                check_win(player_score, dealer_score)
+                break
+
+            if player_score > 21:
+                print("\033[31m{}\033[0m".format("BUSTED! You lose the game!"))
+                break
+
