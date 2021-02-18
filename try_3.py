@@ -71,6 +71,22 @@ def dealer_AI(dealer_score, player_score, dealer_hand, player_hand):
     return dealer_score
 
 
+def check_win(player_score, dealer_score):
+    if dealer_score > 21:
+        print("\033[32m{}\033[0m".format("DEALER BUSTED! You win the game!"))
+        return
+    if dealer_score == 21 and player_score == 21:
+        print("НИЧЬЯ! НУ НИЧЕГО СЕБЕ...")
+        return
+    if dealer_score == player_score:
+        print('НИЧЬЯ')
+    if dealer_score > player_score:
+        print("\033[31m{}\033[0m".format("Dealer wins the game! You lose!"))
+    if dealer_score < player_score:
+        print("\033[32m{}\033[0m".format("You win the game!"))
+
+
+
 cards = [2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5,
          6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10,
          "J", "J", "J", "J", "Q", "Q", "Q", "Q", "K", "K", "K", "K",
@@ -91,19 +107,27 @@ check_starting_hand_blackjack(player_result[0], dealer_result[0], dealer_hand)
 print("\nВы можете ввести: hit/h чтобы взять ещё карту, "
       "stand/s чтобы остановиться, double/d чтобы удвоить ставку и взять одну карту")
 
+hit_status = False
+
 while True:
     command = input("\nВведите команду: ")
 
     if command.lower() in ["hit", 'h']:
+        hit_status = True
         hit(cards, player_hand)
         # player_hand = ["A", 3, "A"]
         player_result = calc_cards(player_hand, first_draw=False)
         print(f'Карты в руке игрока: {player_hand}')
         player_score = check_score(player_result)
+
         if player_score >= 21:
             break
 
     elif command.lower() in ["stand", "s"]:
-        print(f'Карты дилера: {dealer_hand} - {dealer_result[0]}')
+        print(f'\nКарты дилера: {dealer_hand} - {dealer_result[0]}')
         dealer_score = dealer_AI(dealer_result[0], player_result[0], dealer_hand, player_hand)
+        if hit_status:
+            check_win(player_score, dealer_score)
+        else:
+            check_win(player_result[0], dealer_score)
         break
