@@ -10,6 +10,7 @@ def starting_draw_dealer(cards: list):
         dealer_choice = choice(cards)
         cards.remove(dealer_choice)
         starting_dealer_hand.append(dealer_choice)
+    print("-----------------------НОВЫЙ РАУНД-----------------------")
     print(f"Карты в руке дилера: ['{starting_dealer_hand[0]}', ??]")
     # print(starting_dealer_hand)
     return starting_dealer_hand
@@ -32,7 +33,6 @@ def hit(cards: list, hand: list):
     cards.remove(player_choice)
     hand.append(player_choice)
     print(f'hit {player_choice}')
-    return hand
 
 
 def check_score(result: tuple):
@@ -56,7 +56,7 @@ def check_starting_hand_blackjack(player, dealer, hand):
         money.lose(bet)
     elif player == 21 and dealer != 21:
         print("\033[32m{}\033[0m".format('BLACKJACK!!! You win the game!'))
-        money.win(bet)
+        money.win(2 * bet)
     elif player == 21 and dealer == 21:
         print("НИЧЬЯ! НУ НИЧЕГО СЕБЕ...")
     else:
@@ -68,7 +68,7 @@ def dealer_AI(dealer_score, player_score, dealer_hand, player_hand):
     print(f'\nКарты дилера: {dealer_hand} - {dealer_score}')
     while dealer_score < player_score:
         hit(cards, dealer_hand)
-        d_result = calc_cards(dealer_hand, first_draw=False)
+        d_result = calc_cards(dealer_hand)
         if d_result[1]:
             dealer_score = d_result[1]
             print(f'Карты в руке дилера: {dealer_hand} - {d_result[0]}/{d_result[1]}')
@@ -115,20 +115,20 @@ def check_win(player_score, dealer_score, double_bet_status):
 
 def game(cards: list):
     dealer_hand = starting_draw_dealer(cards)
-    # dealer_hand = ["A", 10]
+    # dealer_hand = ["A", 2]
     # print(dealer_hand)
     player_hand = starting_draw_player(cards)
-    # player_hand = ["A", "Q"]
+    # player_hand = ["A", 3]
     # print(player_hand)
-    player_result = calc_cards(player_hand, first_draw=True)
-    dealer_result = calc_cards(dealer_hand, first_draw=True)
+    player_result = calc_cards(player_hand)
+    dealer_result = calc_cards(dealer_hand)
 
     if player_result[1]:
         print(f'Результат игрока {player_result[0]}/{player_result[1]}')
     else:
         print(f'Результат игрока {player_result[0]}')
 
-    if check_starting_hand_blackjack(player_result[0], dealer_result[0], dealer_hand):
+    if check_starting_hand_blackjack(max(player_result), max(dealer_result), dealer_hand):
 
         print("\nВы можете ввести: hit/h чтобы взять ещё карту, "
               "stand/s чтобы остановиться, double/d чтобы удвоить ставку и взять одну карту")
@@ -145,7 +145,7 @@ def game(cards: list):
                 double_block = True
                 hit(cards, player_hand)
                 # player_hand.append(3)
-                player_result = calc_cards(player_hand, first_draw=False)
+                player_result = calc_cards(player_hand)
                 # print(player_result)
                 print(f'Карты в руке игрока: {player_hand}')
                 player_score = check_score(player_result)
@@ -167,7 +167,7 @@ def game(cards: list):
                 print(f'Вы поставили ещё {bet} рублей')
                 hit(cards, player_hand)
                 # player_hand.append("A")
-                player_result = calc_cards(player_hand, first_draw=False)
+                player_result = calc_cards(player_hand)
                 player_score = max(player_result)
                 print(f'Карты в руке игрока: {player_hand} - {player_score}')
                 if player_score <= 21:
