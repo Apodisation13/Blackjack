@@ -4,6 +4,9 @@ class Money:
         while status:
             try:
                 self.start_cash = int(input("Введите, сколько денег вы хотите взять с собой за стол: "))
+                if self.start_cash <= 0:
+                    print("Нельзя вводить отрицательное или ноль")
+                    continue
                 print(f'У вас при себе {self.start_cash} рублей, удачи в игре!')
                 status = False
             except ValueError:
@@ -11,7 +14,6 @@ class Money:
 
     def show_wallet(self):
         print(f'У вас в игре {self.start_cash} рублей')
-        return self.start_cash
 
     def can_bet(self, bet):
         if bet > self.start_cash:
@@ -28,9 +30,7 @@ class Money:
         if self.can_bet(bet):
             self.start_cash -= bet
             print(f'Вы проигрываете {bet} рублей')
-            if self.start_cash != 0:
-                pass
-            else:
+            if self.start_cash == 0:
                 print('БАНКРОТ!')
 
 

@@ -1,5 +1,5 @@
 def calc_cards(hand: list):
-    first_draw = False
+
     calc_hand = []
     result = 0
     result_ace = 0
@@ -22,20 +22,18 @@ def calc_cards(hand: list):
 
     # print("сумма руки без туза", sum(calc_hand))
 
-    if ace_count > 0:
-        # ace = True
-        if ace_count == 1:
-            result += ace_count
-            result_ace += 11
-        elif ace_count == 2:
-            result += ace_count
-            result_ace += 12
-        elif ace_count == 3:
-            result += ace_count
-            result_ace += 13
-        elif ace_count == 4:
-            result += ace_count
-            result_ace += 14
+    if ace_count == 1:
+        result += ace_count
+        result_ace += 11
+    elif ace_count == 2:
+        result += ace_count
+        result_ace += 12
+    elif ace_count == 3:
+        result += ace_count
+        result_ace += 13
+    elif ace_count == 4:
+        result += ace_count
+        result_ace += 14
 
     if ace_count > 0:
         result_ace += sum(calc_hand)

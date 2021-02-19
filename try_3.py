@@ -50,9 +50,9 @@ def check_score(result: tuple):
     return result[0]
 
 
-def check_starting_hand_blackjack(player, dealer, hand):
+def check_starting_hand_blackjack(player, dealer, d_hand):
     if dealer == 21 and player != 21:
-        print("\033[31m{}\033[0m".format(f'{hand} - BLACKJACK!!! Dealer wins, you lose!'))
+        print("\033[31m{}\033[0m".format(f'{d_hand} - BLACKJACK!!! Dealer wins, you lose!'))
         money.lose(bet)
     elif player == 21 and dealer != 21:
         print("\033[32m{}\033[0m".format('BLACKJACK!!! You win the game!'))
