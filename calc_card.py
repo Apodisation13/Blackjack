@@ -3,7 +3,6 @@ def calc_cards(hand: list):
     calc_hand = []
     result = 0
     result_ace = 0
-    # ace = False
 
     if hand == ["A", "A"]:
         # print("два туза в стартовой руке")
@@ -17,8 +16,6 @@ def calc_cards(hand: list):
             calc_hand.append(10)
         elif card != "A":
             calc_hand.append(card)
-        # elif card == "A" and first_draw:
-        #     calc_hand.append(11)
 
     # print("сумма руки без туза", sum(calc_hand))
 

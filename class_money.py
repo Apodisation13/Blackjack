@@ -22,16 +22,14 @@ class Money:
         return True
 
     def win(self, bet):
-        if self.can_bet(bet):
-            self.start_cash += bet
-            print(f'Вы выигрываете {bet * 2} рублей')
+        self.start_cash += bet
+        print(f'Вы выигрываете {bet * 2} рублей')
 
     def lose(self, bet):
-        if self.can_bet(bet):
-            self.start_cash -= bet
-            print(f'Вы проигрываете {bet} рублей')
-            if self.start_cash == 0:
-                print('БАНКРОТ!')
+        self.start_cash -= bet
+        print(f'Вы проигрываете {bet} рублей')
+        if self.start_cash == 0:
+            print('БАНКРОТ!')
 
 
 if __name__ == "__main__":

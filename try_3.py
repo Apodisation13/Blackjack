@@ -56,7 +56,7 @@ def check_starting_hand_blackjack(player, dealer, d_hand):
         money.lose(bet)
     elif player == 21 and dealer != 21:
         print("\033[32m{}\033[0m".format('BLACKJACK!!! You win the game!'))
-        money.win(2 * bet)
+        money.win(bet * 2)
     elif player == 21 and dealer == 21:
         print("НИЧЬЯ! НУ НИЧЕГО СЕБЕ...")
     else:
@@ -118,7 +118,7 @@ def game(cards: list):
     # dealer_hand = ["A", 2]
     # print(dealer_hand)
     player_hand = starting_draw_player(cards)
-    # player_hand = ["A", 3]
+    # player_hand = ["A", 10]
     # print(player_hand)
     player_result = calc_cards(player_hand)
     dealer_result = calc_cards(dealer_hand)
