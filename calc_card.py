@@ -1,12 +1,7 @@
 def calc_cards(hand: list):
-
     calc_hand = []
     result = 0
     result_ace = 0
-
-    if hand == ["A", "A"]:
-        # print("два туза в стартовой руке")
-        return 12, 0
 
     ace_count = hand.count("A")
     # print("количество тузов", ace_count)
@@ -42,7 +37,7 @@ def calc_cards(hand: list):
     return result, result_ace
 
 
-cards_default = [2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5,
-                 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10,
-                 "J", "J", "J", "J", "Q", "Q", "Q", "Q", "K", "K", "K", "K",
-                 "A", "A", "A", "A"]
+deck = [2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5,
+        6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10,
+        "J", "J", "J", "J", "Q", "Q", "Q", "Q", "K", "K", "K", "K",
+        "A", "A", "A", "A"]

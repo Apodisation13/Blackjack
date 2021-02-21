@@ -1,4 +1,4 @@
-from calc_card import calc_cards, cards_default
+from calc_card import calc_cards
 from random import choice
 
 
@@ -25,8 +25,8 @@ class Participant:
 
 
 class Player(Participant):
-    def __init__(self):
-        super().__init__(cards_default)
+    def __init__(self, deck):
+        super().__init__(deck)
         # self.hand = ["A", 6] # тестирование на фиксированную руку
         # self.calc_score(self.hand) # тестирование на фиксированную руку
         self.show_cards(self.hand)
@@ -50,8 +50,8 @@ class Player(Participant):
 
 
 class Dealer(Participant):
-    def __init__(self):
-        super().__init__(cards_default)
+    def __init__(self, deck):
+        super().__init__(deck)
         # self.hand = [5, "A"] # тестирование на фиксированную руку
         # self.calc_score(self.hand) # тестирование на фиксированную руку
         print(f"Карты в руке дилера: ['{self.hand[0]}', ??]")
@@ -71,5 +71,7 @@ class Dealer(Participant):
 
     def dealer_AI(self, deck, player):
         self.show_hand_and_score(self.hand)
+        if max(player.score) > 21:
+            return
         while max(self.score) < max(player.score):
             self.hit(deck)
