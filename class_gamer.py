@@ -25,10 +25,6 @@ class Participant:
         self.hand.append(draw)
         print(f'hit {draw}')
 
-    def stand(self):
-        pass
-
-
 
 class Player(Participant):
     def __init__(self):
@@ -62,7 +58,6 @@ class Dealer(Participant):
         print(f"Карты в руке дилера: ['{self.hand[0]}', ??]")
         # print(f"Карты в руке дилера: {self.hand}") # показать полную руку дилера
 
-
     def show_hand_and_score(self, hand):
         if self.score[1]:
             print(f'Карты дилера {hand}, результат {self.score[0]}/{self.score[1]}')
@@ -75,7 +70,9 @@ class Dealer(Participant):
         self.show_hand_and_score(self.hand)
 
     def dealer_AI(self, deck):
-        pass
+        self.show_hand_and_score(self.hand)
+        while max(self.score) < max(player.score):
+            self.hit(deck)
 
 
 player = Player()
@@ -83,5 +80,21 @@ dealer = Dealer()
 
 starting_bj = check_starting_bj(player.score, dealer.score, dealer.hand)
 if starting_bj[1]:
-    player.hit(cards_default)
+
+    while True:
+        print("\nВы можете ввести: hit/h чтобы взять ещё карту, "
+              "stand/s чтобы остановиться, double/d чтобы удвоить ставку и взять одну карту")
+
+        command = input("\nВведите команду: ")
+
+        if command.lower() == "h":
+
+            player.hit(cards_default)
+            if max(player.score) > 21:
+                break
+
+        elif command.lower() == "s":
+            dealer.dealer_AI(cards_default)
+            break
+
     check_winner(player.score, dealer.score, player.hand, dealer.hand)
