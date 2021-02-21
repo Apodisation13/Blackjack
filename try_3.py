@@ -187,22 +187,23 @@ def game(cards: list):
                 print('Неправильная команда')
 
 
-cards_defalut = [2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5,
+cards_default = [2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5,
                  6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10,
                  "J", "J", "J", "J", "Q", "Q", "Q", "Q", "K", "K", "K", "K",
                  "A", "A", "A", "A"]
-cards = cards_defalut.copy()
+cards = cards_default.copy()
 
-money = Money()
-while money.start_cash != 0:
-    try:
-        bet = int(input("\nСдейлайте ставку: "))
-        if bet <= 0:
-            print("Вводить только числа БОЛЬШЕ НУЛЯ")
-    except ValueError:
-        print('Вводить только целые числа')
-    else:
-        if money.can_bet(bet):
-            game(cards)
-            money.show_wallet()
-            cards = cards_defalut
+if __name__ == "__main__":
+    money = Money()
+    while money.start_cash != 0:
+        try:
+            bet = int(input("\nСдейлайте ставку: "))
+            if bet <= 0:
+                print("Вводить только числа БОЛЬШЕ НУЛЯ")
+        except ValueError:
+            print('Вводить только целые числа')
+        else:
+            if money.can_bet(bet):
+                game(cards)
+                money.show_wallet()
+                cards = cards_default
