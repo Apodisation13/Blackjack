@@ -1,7 +1,5 @@
-from calc_card import calc_cards
+from calc_card import calc_cards, cards_default
 from random import choice
-from try_3 import cards_default
-from winner import check_winner, check_starting_bj
 
 
 class Participant:
@@ -29,8 +27,8 @@ class Participant:
 class Player(Participant):
     def __init__(self):
         super().__init__(cards_default)
-        # self.hand = [2, "A"] # тестирование на фиксированную руку
-        # self.calc_score(self.hand) #
+        # self.hand = ["A", 6] # тестирование на фиксированную руку
+        # self.calc_score(self.hand) # тестирование на фиксированную руку
         self.show_cards(self.hand)
         self.show_score()
 
@@ -45,6 +43,7 @@ class Player(Participant):
 
     def hit(self, deck):
         super().hit(deck)
+        # self.hand.append(4) # тестирование требуемой карты
         self.show_cards(self.hand)
         self.calc_score(self.hand)
         self.show_score()
@@ -53,8 +52,8 @@ class Player(Participant):
 class Dealer(Participant):
     def __init__(self):
         super().__init__(cards_default)
-        # self.hand = [2, "A"] # тестирование на фиксированную руку
-        # self.calc_score(self.hand) #
+        # self.hand = [5, "A"] # тестирование на фиксированную руку
+        # self.calc_score(self.hand) # тестирование на фиксированную руку
         print(f"Карты в руке дилера: ['{self.hand[0]}', ??]")
         # print(f"Карты в руке дилера: {self.hand}") # показать полную руку дилера
 
@@ -66,35 +65,11 @@ class Dealer(Participant):
 
     def hit(self, deck):
         super().hit(deck)
+        # self.hand.append(5) # для тестирования любой карты
         self.calc_score(self.hand)
         self.show_hand_and_score(self.hand)
 
-    def dealer_AI(self, deck):
+    def dealer_AI(self, deck, player):
         self.show_hand_and_score(self.hand)
         while max(self.score) < max(player.score):
             self.hit(deck)
-
-
-player = Player()
-dealer = Dealer()
-
-starting_bj = check_starting_bj(player.score, dealer.score, dealer.hand)
-if starting_bj[1]:
-
-    while True:
-        print("\nВы можете ввести: hit/h чтобы взять ещё карту, "
-              "stand/s чтобы остановиться, double/d чтобы удвоить ставку и взять одну карту")
-
-        command = input("\nВведите команду: ")
-
-        if command.lower() == "h":
-
-            player.hit(cards_default)
-            if max(player.score) > 21:
-                break
-
-        elif command.lower() == "s":
-            dealer.dealer_AI(cards_default)
-            break
-
-    check_winner(player.score, dealer.score, player.hand, dealer.hand)
