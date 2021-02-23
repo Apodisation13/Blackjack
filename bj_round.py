@@ -67,8 +67,8 @@ def game():
         if money.can_bet(bet):
             print("\n-----------------------НОВЫЙ РАУНД-----------------------")
             winner, double_status, starting_blackjack_status = bj_round(deck_in_play, money, bet)
-            print(winner, double_status, starting_blackjack_status)
+            # print(winner, double_status, starting_blackjack_status)
             money.payment(bet, winner, double_status, starting_blackjack_status)
-            print(len(deck_in_play))
+            # print(len(deck_in_play))
             deck_in_play = deck.copy()
-            print(len(deck_in_play))
+            # print(len(deck_in_play))
