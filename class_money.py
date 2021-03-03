@@ -61,25 +61,3 @@ class Money:
                 self.lose(bet)
         else:
             self.show_wallet()
-
-# if __name__ == "__main__":
-#     money = Money()
-#     while money.start_cash != 0:
-#         command = input("Введите команду: ")
-#
-#         if command == "s":
-#             money.show_wallet()
-#         elif command == "w":
-#             try:
-#                 bet = int(input("Введите ставку: "))
-#             except ValueError:
-#                 print('Вводить только целые числа')
-#             else:
-#                 money.win(bet)
-#         elif command == "l":
-#             try:
-#                 bet = int(input("Введите ставку: "))
-#             except ValueError:
-#                 print('Вводить только целые числа')
-#             else:
-#                 money.lose(bet)
