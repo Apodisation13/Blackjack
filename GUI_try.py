@@ -1,8 +1,9 @@
 from tkinter import *
 from tkinter import messagebox
-from class_gamer import Player, Dealer
-from deck import deck
+from class_dealer import Dealer
+from class_player import Player
 from class_money import Money
+from deck import deck
 from time import sleep
 # from PIL import Image, ImageTk
 
@@ -61,24 +62,28 @@ def game():
         input_bet()
 
     def hit():
+        double_down_button.destroy()
         root.update()
         sleep(1)
         player.hit(deck_in_round)
-        if max(player.score) > 21:
 
-            money.wallet.config(bg="red", text=f'Ваш кошелёк: {money.money}')
-            player.player_result.config(bg="red")
-            messagebox.showerror("ВЫ ПРОИГРАЛИ!", "Busted! Счёт больше 21         ")
+        status = money.hit_value(player)
+        if status:
             new_round()
+        if max(player.score) == 21:
+            stand()
 
     def stand():
-        hitB.destroy()
-        double_downB.destroy()
-        standB.destroy()
+        hit_button.destroy()
+        double_down_button.destroy()
+        stand_button.destroy()
+
         player.player_result.config(text=f"Ваш результат: {max(player.score)}", bg="grey")
-        dealer.open_hidden(root)
-        dealer.show_dealer_result()
+
         dealer.dealer_AI(deck_in_round, player, root)
+
+        money.check_winner(bet, player, dealer)
+        new_round()
 
     deck_in_round = deck.copy()
     player = Player(deck_in_round, root)
@@ -86,14 +91,15 @@ def game():
 
     dealer.start_bj(player, root)
     starting_bj = money.starting_winner(player.score, dealer.score)[0]
+
     if not starting_bj:
 
-        hitB = Button(text="HIT", bg="cyan", font=20, command=hit)
-        hitB.place(x=50, y=530, width=150, height=50)
-        standB = Button(text="STAND", bg="cyan", font="16", command=stand)
-        standB.place(x=250, y=530, width=150, height=50)
-        double_downB = Button(text="Double-Down", bg="cyan", font="16", command=process_money)
-        double_downB.place(x=450, y=530, width=150, height=50)
+        hit_button = Button(text="HIT", bg="cyan", font=20, command=hit)
+        hit_button.place(x=50, y=530, width=150, height=50)
+        stand_button = Button(text="STAND", bg="cyan", font="16", command=stand)
+        stand_button.place(x=250, y=530, width=150, height=50)
+        double_down_button = Button(text="Double-Down", bg="cyan", font="16", command=process_money)
+        double_down_button.place(x=450, y=530, width=150, height=50)
     else:
         new_round()
     # r = Button(text="new round", bg="yellow", font=20, command=new_round)
@@ -101,7 +107,7 @@ def game():
 
 
 root = Tk()
-root.geometry('1000x600+50+100')  # обязательно так, через пробел нельзя
+root.geometry('1000x600+400+100')  # обязательно так, через пробел нельзя
 root.resizable(False, False)  # заблокировать фуллскрин
 
 # root_im = ImageTk.PhotoImage(Image.open("D:/Python Projects/blackjack/cardsimages/bj.png"))

@@ -33,8 +33,8 @@ class Money:
         return True
 
     def place_bet(self, bet):
-        self.wallet.config(text=f'Ваш кошелёк: {self.money}-{bet}', bg='grey')
         self.money -= bet
+        self.wallet.config(text=f'Ваш кошелёк: {self.money}', bg='grey')
         self.bet = Label(text=f'Ваша ставка: {bet}', font=("Courier", 12), bg='grey')
         self.bet.place(x=750, y=70)
 
@@ -73,9 +73,47 @@ class Money:
         if max(p_score) == 21:
             messagebox.showinfo("ВЫИГРЫШ!!!", "21!!!!!! BLACKJACK!!!")
             winner = "player"
-            return True, winner
+            return True, winner, True  # последнее тру чтобы ставку потом удвоить
         elif max(d_score) == 21:
             messagebox.showerror("ВЫ ПРОИГРАЛИ!!!", "21!!! BLACKJACK!!!")
             winner = "dealer"
+            return True, winner, False
+        return False, winner, False
+
+    def check_winner(self, bet, player, dealer):  # , player_hand, dealer_hand):
+        winner = ''
+        if max(dealer.score) > 21:
+            self.bet.config(bg='green')
+            self.wallet.config(bg="green", text=f'Ваш кошелёк: {self.money} + {bet} + {bet}')
+            player.player_result.config(bg="green")
+            dealer.dealer_result.config(bg="blue")
+            messagebox.showinfo("ВЫИГРЫШ!!!", "DEALER BUSTED! You win the game!")
+            winner = 'player'
             return True, winner
+        elif max(player.score) == max(dealer.score):
+            self.wallet.config(bg="green", text=f'Ваш кошелёк: {self.money} + {bet}')
+            messagebox.showinfo("НИЧЬЯ", "Ничья...      ")
+            return True, winner
+        elif max(player.score) > max(dealer.score):
+            player.player_result.config(bg="green")
+            winner = 'player'
+        elif max(player.score) < max(dealer.score):
+            if max(dealer.score) == 21:
+                dealer.dealer_result.config(text="21!!! BLACKJACK!!!", bg="red")
+                messagebox.showerror("ВЫ ПРОИГРАЛИ!!!", "21!!! BLACKJACK!!!")
+            else:
+                dealer.dealer_result.config(bg="red")
+                messagebox.showerror("ВЫ ПРОИГРАЛИ!", "Вы проиграли - у дилера очков больше")
+            winner = 'dealer'
+            self.bet.config(bg='red')
+            self.wallet.config(bg="red")
         return False, winner
+
+    def hit_value(self, player):
+        if max(player.score) > 21:
+            self.wallet.config(bg="red", text=f'Ваш кошелёк: {self.money}')
+            self.bet.config(bg='red')
+            player.player_result.config(bg="red")
+            messagebox.showerror("ВЫ ПРОИГРАЛИ!", "Busted! Счёт больше 21         ")
+            return True
+        return False
