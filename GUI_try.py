@@ -77,7 +77,8 @@ def game():
         double_down_button.destroy()
         stand_button.destroy()
 
-        player.player_result.config(text=f"Ваш результат: {max(player.score)}", bg="grey")
+        if max(player.score) != 21:  # костыль на случай если мы пришли сюда из хита, где поймали ровно 21
+            player.player_result.config(text=f"Ваш результат: {max(player.score)}", bg="grey")
 
         dealer.dealer_AI(deck_in_round, player, root)
 

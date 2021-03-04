@@ -7,7 +7,7 @@ from time import sleep
 class Player(Participant):
     def __init__(self, deck, root):
         super().__init__(deck)
-        # self.hand = ["7club", "4club"]  # тестирование на фиксированную руку
+        # self.hand = ["aceclub", "4club"]  # тестирование на фиксированную руку
         # self.calc_score(self.hand)  # тестирование на фиксированную руку
 
         self.x_coord = 50  # начальная позиция карт игрока
@@ -24,19 +24,20 @@ class Player(Participant):
         self.show_score()
 
     def show_score(self):
+        self.player_result.config(font=("Courier", 16))
         if self.score[1]:
-            if max(self.score) != 21:
-                self.player_result.config(text=f"Ваш результат: {self.score[0]}/{self.score[1]}", bg="green")
-            else:
+            if max(self.score) == 21:
                 self.player_result.config(text="21!!!!!! BLACKJACK!!!", bg="orange")
-        else:
-            if max(self.score) != 21:
-                self.player_result.config(text=f"Ваш результат: {self.score[0]}", bg="green")
             else:
+                self.player_result.config(text=f"Ваш результат: {self.score[0]}/{self.score[1]}", bg="green")
+        else:
+            if max(self.score) == 21:
                 self.player_result.config(text="21!!!!!! BLACKJACK!!!", bg="orange")
 
+            else:
+                self.player_result.config(text=f"Ваш результат: {self.score[0]}", bg="green")
+
         self.player_result.place(x=50, y=270, width=380, height=50)
-        self.player_result.config(font=("Courier", 16))
 
     def show_card_in_hand(self, x_coord, y_coord, number):
         card_image = Image.open(f'D:/Python Projects/blackjack/cardsimages/{self.hand[number]}.jpg')
@@ -50,7 +51,7 @@ class Player(Participant):
 
     def hit(self, deck):
         super().hit(deck)
-        # self.hand.append("acespade") # тестирование требуемой карты
+        # self.hand.append("6spade") # тестирование требуемой карты
 
         self.calc_score(self.hand)
         self.show_score()

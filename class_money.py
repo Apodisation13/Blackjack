@@ -90,12 +90,21 @@ class Money:
             self.wallet.config(bg="green", text=f'Ваш кошелёк: {self.money} + {bet} + {bet}')
             player.player_result.config(bg="green")
             dealer.dealer_result.config(bg="blue")
-            messagebox.showinfo("ВЫИГРЫШ!!!", "DEALER BUSTED! You win the game!")
+            if max(player.score) == 21:
+                player.player_result.config(bg="yellow")
+                messagebox.showwarning("ВЫИГРЫШ!!!", "Dealer busted! You have 21!!! You win the game!")
+            else:
+                messagebox.showinfo("ВЫИГРЫШ!!!", "DEALER BUSTED! You win the game!")
             winner = 'player'
             return True, winner
         elif max(player.score) == max(dealer.score):
+            player.player_result.config(bg='grey')
             self.wallet.config(bg="green", text=f'Ваш кошелёк: {self.money} + {bet}')
-            messagebox.showinfo("НИЧЬЯ", "Ничья...      ")
+            if max(player.score) == max(dealer.score) == 21:
+                dealer.dealer_result.config(text="BLACKJACK...")
+                messagebox.showinfo("НИЧЬЯ", "Ничья... НУ НИЧЕГО СЕБЕ...      ")
+            else:
+                messagebox.showinfo("НИЧЬЯ", "Ничья...      ")
             return True, winner
         elif max(player.score) > max(dealer.score):
             player.player_result.config(bg="green")

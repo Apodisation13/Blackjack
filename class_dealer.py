@@ -87,7 +87,7 @@ class Dealer(Participant):
 
     def hit(self, deck, root):
         super().hit(deck)  # для тестирования фиксированного хита эту строку закомментить
-        # self.hand.append("aceclub") # для тестирования любой карты
+        # self.hand.append("10club") # для тестирования любой карты
         if max(self.score) < 21:
             root.update()  # вот именно в такой последовательности, как ни странно...
             sleep(2)
