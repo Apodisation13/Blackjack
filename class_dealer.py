@@ -7,7 +7,7 @@ from time import sleep
 class Dealer(Participant):
     def __init__(self, deck, root):
         super().__init__(deck)
-        # self.hand = ["acediamond", "3hearts"] # тестирование на фиксированную руку
+        # self.hand = ["4diamond", "7hearts"] # тестирование на фиксированную руку
         # self.calc_score(self.hand) # тестирование на фиксированную руку
 
         self.x_coord = 50  # начальная позиция карт дилера
@@ -23,9 +23,12 @@ class Dealer(Participant):
 
         self.dealer_result = Label()  # Поле с результатом дилера
 
-    def start_bj(self, player, root):
+    def start_bj(self, player, money, root):
         if max(self.score) == 21 and max(player.score) != 21:
             self.open_hidden(root)
+            player.player_result.config(bg="grey")
+            money.wallet.config(bg="red")
+            money.bet.config(bg="red")
 
     def s(self, card_image, x_coord, y_coord):
         card_image = card_image.resize((150, 170), Image.ANTIALIAS)
@@ -60,27 +63,31 @@ class Dealer(Participant):
             if max(self.score) != 21:
                 self.dealer_result = Label(text=f"Результат дилера: {self.score[0]}/{self.score[1]}", bg="grey")
             else:
-                self.dealer_result = Label(text="21!!!!!! BLACKJACK у дилера!!!", bg="orange")
+                self.dealer_result = Label(text="21!!! BLACKJACK у дилера!!!", bg="red")
         else:
             if max(self.score) != 21:
                 self.dealer_result = Label(text=f"Результат дилера: {self.score[0]}", bg="grey")
             else:
-                self.dealer_result = Label(text="21!!!!!! BLACKJACK у дилера!!!", bg="orange")
+                self.dealer_result = Label(text="21!!! BLACKJACK у дилера!!!", bg="red")
 
-        self.dealer_result.place(x=50, y=200, width=300, height=50)
+        self.dealer_result.place(x=50, y=200, width=380, height=50)
         self.dealer_result.config(font=("Courier", 16))
 
     def dealer_AI(self, deck, player, root):
         self.open_hidden(root)
-        if max(player.score) > 21:
-            return
+        # if max(player.score) > 21:  # если игрок перебрал 21 хитами, чтоб не играл тут
+        #     return
+        if max(player.score) <= 11 and max(player.score) == max(self.score):
+            self.hit(deck, root)
+        # костыль - если у игрока 11 или меньше, то при равенстве очков дилеру не страшно рискнуть и взять карту
+        # потому что при любой карте 21 он не переберёт
         while max(self.score) < max(player.score):
             self.hit(deck, root)
         self.dealer_result.config(text=f"Результат дилера: {max(self.score)}", bg="grey")
 
     def hit(self, deck, root):
-        super().hit(deck)
-        # self.hand.append(5) # для тестирования любой карты
+        super().hit(deck)  # для тестирования фиксированного хита эту строку закомментить
+        # self.hand.append("aceclub") # для тестирования любой карты
         if max(self.score) < 21:
             root.update()  # вот именно в такой последовательности, как ни странно...
             sleep(2)

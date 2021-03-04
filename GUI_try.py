@@ -1,5 +1,4 @@
 from tkinter import *
-from tkinter import messagebox
 from class_dealer import Dealer
 from class_player import Player
 from class_money import Money
@@ -67,10 +66,10 @@ def game():
         sleep(1)
         player.hit(deck_in_round)
 
-        status = money.hit_value(player)
-        if status:
+        if money.hit_bust(player):  # если хитом перебрали 21
             new_round()
         if max(player.score) == 21:
+            player.show_score()
             stand()
 
     def stand():
@@ -82,15 +81,15 @@ def game():
 
         dealer.dealer_AI(deck_in_round, player, root)
 
-        money.check_winner(bet, player, dealer)
+        winner = money.check_winner(bet, player, dealer)[1]
+        money.payment(bet, winner, False, False)
         new_round()
 
     deck_in_round = deck.copy()
     player = Player(deck_in_round, root)
     dealer = Dealer(deck_in_round, root)
 
-    dealer.start_bj(player, root)
-    starting_bj = money.starting_winner(player.score, dealer.score)[0]
+    starting_bj = money.starting_bj_winner(player, dealer, bet, root)
 
     if not starting_bj:
 
@@ -107,23 +106,23 @@ def game():
 
 
 root = Tk()
-root.geometry('1000x600+400+100')  # обязательно так, через пробел нельзя
+root.geometry('1100x600+400+100')  # обязательно так, через пробел нельзя
 root.resizable(False, False)  # заблокировать фуллскрин
 
 # root_im = ImageTk.PhotoImage(Image.open("D:/Python Projects/blackjack/cardsimages/bj.png"))
 # label = Label(image=root_im)
 # label.place(x=0, y=0, height=600, width=1000)
 
-label1 = Label(text="Введите сумму: ", font='70')
-label1.place(x=470, y=240)
+label1 = Label(text="Введите сумму:", font=("Courier", 20))
+label1.place(x=550-125, y=150, width=250, height=50)
 
-data1 = Entry(font="70", justify="center")  # justify - текст по центру
-data1.place(x=463, y=270, width=135, height=50)
+data1 = Entry(justify="center", font=("Courier", 22))  # justify - текст по центру
+data1.place(x=550-100, y=220, width=200, height=75)
 # money = data1.get()
 
 button_image = PhotoImage(file='D:/Python Projects/blackjack/cardsimages/play_button.png')
-button1 = Button(text="Играть", bg="green", font="16", command=process_money, image=button_image)
+button1 = Button(text="Играть", bg="green", font=("Courier", 22), command=process_money, image=button_image)
 # 1: вводим деньги и идём на кнопку играть
-button1.place(x=430, y=330, width=200, height=70)
+button1.place(x=550-150, y=330, width=300, height=100)
 
 root.mainloop()
