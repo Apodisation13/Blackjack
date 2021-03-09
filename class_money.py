@@ -41,11 +41,6 @@ class Money:
     def win(self, bet):
         self.money += bet
 
-    def lose(self, bet):
-        self.money -= bet
-        if self.money < 0:
-            self.money = 0
-
     def end_game(self, root, wallet_label):
         if self.money == 0:
             wallet_label.config(bg="red")
