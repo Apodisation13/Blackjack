@@ -2,12 +2,15 @@ from class_participant import Participant
 from tkinter import *
 from PIL import Image, ImageTk
 from time import sleep
+import requests
+from io import BytesIO
+from deck import links
 
 
 class Player(Participant):
     def __init__(self, deck, root):
         super().__init__(deck)
-        # self.hand = ["aceclub", "4club"]  # тестирование на фиксированную руку
+        # self.hand = ["2club", "6club"]  # тестирование на фиксированную руку
         # self.calc_score(self.hand)  # тестирование на фиксированную руку
 
         self.x_coord = 50  # начальная позиция карт игрока
@@ -40,7 +43,9 @@ class Player(Participant):
         self.player_result.place(x=50, y=270, width=380, height=50)
 
     def show_card_in_hand(self, x_coord, y_coord, number):
-        card_image = Image.open(f'D:/Python Projects/blackjack/cardsimages/{self.hand[number]}.jpg')
+        url = links[self.hand[number]]
+        response = requests.get(url)
+        card_image = Image.open(BytesIO(response.content))
         card_image = card_image.resize((150, 170), Image.ANTIALIAS)
         card_image = ImageTk.PhotoImage(card_image)
         card = Label(image=card_image)
@@ -51,7 +56,7 @@ class Player(Participant):
 
     def hit(self, deck):
         super().hit(deck)
-        # self.hand.append("6spade") # тестирование требуемой карты
+        # self.hand.append("5spade") # тестирование требуемой карты
 
         self.calc_score(self.hand)
         self.show_score()

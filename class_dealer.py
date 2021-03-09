@@ -2,12 +2,15 @@ from class_participant import Participant
 from tkinter import *
 from PIL import Image, ImageTk
 from time import sleep
+from deck import links
+import requests
+from io import BytesIO
 
 
 class Dealer(Participant):
     def __init__(self, deck, root):
         super().__init__(deck)
-        # self.hand = ["4diamond", "7hearts"] # тестирование на фиксированную руку
+        # self.hand = ["qdiamond", "7hearts"] # тестирование на фиксированную руку
         # self.calc_score(self.hand) # тестирование на фиксированную руку
 
         self.x_coord = 50  # начальная позиция карт дилера
@@ -41,11 +44,15 @@ class Dealer(Participant):
         self.number += 1
 
     def open_card(self, number):
-        card_image = Image.open(f'D:/Python Projects/blackjack/cardsimages/{self.hand[number]}.jpg')
+        url = links[self.hand[number]]
+        response = requests.get(url)
+        card_image = Image.open(BytesIO(response.content))
         self.s(card_image, self.x_coord, self.y_coord)
 
     def hidden_card(self):
-        card_image = Image.open(f'D:/Python Projects/blackjack/cardsimages/cardback.jpg')
+        url = links["cardback"]
+        response = requests.get(url)
+        card_image = Image.open(BytesIO(response.content))
         self.s(card_image, self.x_coord, self.y_coord)
 
     def open_hidden(self, root):
@@ -87,7 +94,8 @@ class Dealer(Participant):
 
     def hit(self, deck, root):
         super().hit(deck)  # для тестирования фиксированного хита эту строку закомментить
-        # self.hand.append("10club") # для тестирования любой карты
+        # self.hand.append("4club") # для тестирования любой карты
+
         if max(self.score) < 21:
             root.update()  # вот именно в такой последовательности, как ни странно...
             sleep(2)

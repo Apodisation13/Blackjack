@@ -54,19 +54,6 @@ class Money:
             return True
         return False
 
-    def payment(self, bet, winner: str, double_status: bool, starting_blackjack_status: bool):
-        if winner == "player":
-            if starting_blackjack_status or double_status:
-                self.win(bet * 2)
-            else:
-                self.win(bet * 2)
-        elif winner == "dealer":
-            if double_status:
-                self.lose(bet * 2)
-        else:
-            self.win(bet)
-            self.show_wallet()
-
     def starting_bj_winner(self, player, dealer, bet, root):
         if max(player.score) == 21:
             self.bet.config(bg='green')
@@ -83,32 +70,45 @@ class Money:
             return True
         return False
 
-    def check_winner(self, bet, player, dealer):  # , player_hand, dealer_hand):
-        winner = ''
+    def check_winner(self, bet, player, dealer, double_status: bool):  # , player_hand, dealer_hand):
+
         if max(dealer.score) > 21:
             self.bet.config(bg='green')
-            self.wallet.config(bg="green", text=f'Ваш кошелёк: {self.money} + {bet} + {bet}')
+
+            if double_status:
+                self.wallet.config(bg="green", text=f'Ваш кошелёк: {self.money}+{bet}+{bet}+{bet}+{bet}')
+                self.win(bet * 4)
+            else:
+                self.wallet.config(bg="green", text=f'Ваш кошелёк: {self.money}+{bet}+{bet}')
+                self.win(bet * 2)
             player.player_result.config(bg="green")
             dealer.dealer_result.config(bg="blue")
+
             if max(player.score) == 21:
                 player.player_result.config(bg="yellow")
                 messagebox.showwarning("ВЫИГРЫШ!!!", "Dealer busted! You have 21!!! You win the game!")
             else:
                 messagebox.showinfo("ВЫИГРЫШ!!!", "DEALER BUSTED! You win the game!")
-            winner = 'player'
-            return True, winner
+
         elif max(player.score) == max(dealer.score):
             player.player_result.config(bg='grey')
-            self.wallet.config(bg="green", text=f'Ваш кошелёк: {self.money} + {bet}')
+
+            if double_status:
+                self.wallet.config(bg="green", text=f'Ваш кошелёк: {self.money}+{bet}+{bet}')
+                self.win(bet * 2)
+            else:
+                self.wallet.config(bg="green", text=f'Ваш кошелёк: {self.money}+{bet}')
+                self.win(bet)
+
             if max(player.score) == max(dealer.score) == 21:
                 dealer.dealer_result.config(text="BLACKJACK...")
                 messagebox.showinfo("НИЧЬЯ", "Ничья... НУ НИЧЕГО СЕБЕ...      ")
             else:
                 messagebox.showinfo("НИЧЬЯ", "Ничья...      ")
-            return True, winner
+
         elif max(player.score) > max(dealer.score):
             player.player_result.config(bg="green")
-            winner = 'player'
+
         elif max(player.score) < max(dealer.score):
             self.bet.config(bg='red')
             self.wallet.config(bg="red")
@@ -118,8 +118,6 @@ class Money:
             else:
                 dealer.dealer_result.config(bg="red")
                 messagebox.showerror("ВЫ ПРОИГРАЛИ!", "Вы проиграли - у дилера очков больше")
-            winner = 'dealer'
-        return False, winner
 
     def hit_bust(self, player):
         if max(player.score) > 21:

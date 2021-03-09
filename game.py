@@ -1,3 +1,1 @@
-from bj_round import game
-
-game()
+import GUI_try
